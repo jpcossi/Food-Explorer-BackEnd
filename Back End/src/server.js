@@ -1,15 +1,19 @@
 require("express-async-errors")
-
+const migrationsRun = require("./database/sqlite/migrations")
 const AppError = require("./utils/AppError")
 const express = require("express")
 const routes = require("./routes")
+
+// executa o banco de dados
+migrationsRun()
 
 // inicializa o express que ajuda a utilizar requisisiçoes http
 const app = express()
 // diz como sera o formato da requisiçao
 app.use(express.json())
-
+// inicializa todas as rotas da api
 app.use(routes)
+
 
 app.use((error, request, response, next) =>{
   // tratamento de error caso seja outros erros, Ex: erro por n ter nome, erro por nao ter email, etc
