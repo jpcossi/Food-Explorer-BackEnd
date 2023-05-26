@@ -14,7 +14,6 @@ app.use(express.json())
 // inicializa todas as rotas da api
 app.use(routes)
 
-
 app.use((error, request, response, next) =>{
   // tratamento de error caso seja outros erros, Ex: erro por n ter nome, erro por nao ter email, etc
   if(error instanceof AppError){

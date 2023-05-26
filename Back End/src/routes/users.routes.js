@@ -14,7 +14,7 @@ function MyMiddleware(request, response, next){
 
 
 usersRoutes.post("/", MyMiddleware, usersController.create)
-
+usersRoutes.put("/:id", usersController.update)
 module.exports = usersRoutes
 
 
