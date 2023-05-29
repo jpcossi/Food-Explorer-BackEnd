@@ -53,10 +53,11 @@ class UsersController {
     if(password && !old_password){
       throw new AppError("Voce precisa informar a senha antiga para definir a nova senha!")
     }
-
+    
+    /*
     if(password == old_password){
       throw new AppError("Voce não pode atualizar a senha com o mesmo conteúdo da antiga!")
-    }
+    }*/
 
     if(password && old_password){
       // utiliza o metodo compare do bcrypt pois nao e possivar comparar coma  senha criptografada de forma normal
