@@ -40,3 +40,4 @@ app.listen(PORT, () => console.log(`Food Explorer Server is running on Port ${PO
 // npx knex init para criar arquivo knex
 // npm é um gerenciador de instalçao de pacotes para node e tambem utilizado para executar scripts e bibliotecas instaladas da api
 // npx executador de pacotes npm que pode executar qualquer pacote do registro npm sem sequer instalar esse pacote
+// npm install jsonwebtoken para instalar biblioteca de geração de tokens durante as requisições http
