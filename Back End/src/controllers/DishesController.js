@@ -1,10 +1,11 @@
-const AppError = require("../utils/AppError")
 const knex = require("../database/knex")
+const AppError = require("../utils/AppError")
+const sqliteConnection = require("../database/sqlite")
 
 class DishesController{
     async create(request, response){
       const { name, price, description, category, ingredients } = request.body
-      const { user_id } = request.params
+      const user_id = request.user.id
 
       const [dish_id] = await knex("dishes").insert({
         name,
@@ -25,6 +26,53 @@ class DishesController{
       await knex("ingredients").insert(ingredientsInsert)
 
       return response.json()    
+    }
+
+    async update(request, response){
+      const { name, price, description, category, ingredients } = request.body
+      const { id } = request.params
+      
+      const database = await sqliteConnection()
+
+      const dish = await database.get("SELECT * FROM dishes WHERE id = (?)", [id])
+      const tags = await database.get("SELECT * FROM ingredients WHERE dish_id = (?)", [id])
+
+      if(!dish){
+        throw new AppError("Prato não encontrado!")
+      }
+      
+      if(!price){
+        throw new AppError("Voce precisa informar o novo preço!")
+      }
+      if(!name){
+        throw new AppError("Voce precisa informar o novo nome!")
+      }
+      if(!description){
+        throw new AppError("Voce precisa informar a nova descrição!")
+      }
+
+      if(!category){
+        throw new AppError("Voce precisa informar a nova categoria!", 401)
+      }
+
+      dish.name = name ?? dish.name
+      dish.description = description ?? dish.description
+      dish.category = category ?? dish.category
+      dish.price = price ?? dish.price
+      
+      await database.run(`
+        UPDATE dishes SET
+        name = ?,
+        description = ?,
+        category = ?,
+        price = ?,
+        updated_at = DATETIME('now')
+        WHERE id = ?
+      `,
+      [dish.name, dish.description, dish.category, dish.price, id]
+      )   
+
+      return response.status(200).json()
     }
 
     async show(request, response){
@@ -48,7 +96,9 @@ class DishesController{
     }
 
     async index(request, response){
-      const { name, user_id, ingredients } = request.query
+      const { name, ingredients } = request.query
+
+      const user_id = request.user.id
 
       let dishes
 
