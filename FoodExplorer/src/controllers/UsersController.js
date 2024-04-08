@@ -26,17 +26,11 @@ class UsersController {
     [name, email, hashedPassword])
     
     return response.status(201).json() 
-    /*if(!name){
-      throw new AppError("Usuário não informado!")
-    }
-    //response.status(201).json({ name, email, password, isAdmin })
-    */
   }
 
   async update(request, response){
     const { name, email, password, old_password } = request.body
     const user_id = request.user.id
-    // const { id } = request.params
 
     const database = await sqliteConnection()
     const user = await database.get("SELECT * FROM users WHERE id = (?)", [user_id])
@@ -56,11 +50,10 @@ class UsersController {
     user.name = name ?? user.name
     user.email = email ?? user.email
 
-    // verifica se a senha usada anetriormente esta certa ou errada antes de mudar para a nova
+    // verifica se a senha usada anteriormente esta certa ou errada antes de mudar para a nova
     if(password && !old_password){
       throw new AppError("Voce precisa informar a senha antiga para definir a nova senha!")
     }
-    
     /*
     if(password == old_password){
       throw new AppError("Voce não pode atualizar a senha com o mesmo conteúdo da antiga!")
